@@ -112,7 +112,7 @@ function ToastWithTheme() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/erp-dashboard">
       <ThemeProvider>
         <AuthProvider>
           <AppRoutes />

@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
+import { copyFileSync, existsSync } from 'fs'
+import { resolve } from 'path'
 
 export default defineConfig({
   base: '/erp-dashboard/',
@@ -104,6 +106,19 @@ export default defineConfig({
         ],
       },
     }),
+    // Copia index.html → 404.html para SPA en GitHub Pages
+    {
+      name: 'copy-404',
+      closeBundle() {
+        const dist = resolve(__dirname, 'dist')
+        const src = resolve(dist, 'index.html')
+        const dest = resolve(dist, '404.html')
+        if (existsSync(src)) {
+          copyFileSync(src, dest)
+          console.log('✓ Copiado index.html → 404.html para SPA en GitHub Pages')
+        }
+      },
+    },
   ],
   resolve: {
     alias: {

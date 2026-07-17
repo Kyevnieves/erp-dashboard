@@ -10,7 +10,9 @@ import Products from "@/pages/Products"
 import Orders from "@/pages/Orders"
 import Users from "@/pages/Users"
 import Data from "@/pages/Data"
+import { useEffect } from "react"
 import type { ReactNode } from "react"
+import { usePwaInstall } from "@/hooks/usePwaInstall"
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth()
@@ -84,6 +86,14 @@ function AppRoutes() {
 
 function ToastWithTheme() {
   const { theme } = useTheme()
+  const { canInstall, showInstallToast } = usePwaInstall()
+
+  useEffect(() => {
+    if (!canInstall) return
+    const timer = setTimeout(showInstallToast, 10000)
+    return () => clearTimeout(timer)
+  }, [canInstall, showInstallToast])
+
   return (
     <ToastContainer
       position="bottom-right"

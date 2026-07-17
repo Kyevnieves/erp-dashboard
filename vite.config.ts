@@ -54,7 +54,25 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,json,woff2}'],
+        // Navigation: network first, fallback to cache — never cache error pages
+        navigateFallback: '/erp-dashboard/index.html',
+        navigateFallbackAllowlist: [/^\/erp-dashboard\//],
         runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'pages-cache',
+              networkTimeoutSeconds: 4,
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24, // 1 día
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
